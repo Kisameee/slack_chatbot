@@ -27,6 +27,7 @@ class Bot(object):
         self._slack_client = slack_client
 
     def parse_bot_commands(self, slack_events):
+
         """
             Parses a list of events coming from the Slack RTM API to find bot commands.
             If a bot command is found, this function returns a tuple of command and channel.
