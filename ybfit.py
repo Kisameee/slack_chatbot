@@ -1,23 +1,32 @@
+import logging
 import os
 import re
 import time
 
 from slackclient import SlackClient
 
-import logging
-
 # constants
-RTM_READ_DELAY = 1  # 1 second delay between reading from RTM
-EXAMPLE_COMMAND = "do"
-MENTION_REGEX = "^<@(|[WU].+)>(.*)"
+from responses.default_response import DefaultResponse
+from responses.do_response import DoCommandResponse
+from responses.search_place_response import SearchPlaceResponse
 
+RESPONSES = [
+    DoCommandResponse(),
+    SearchPlaceResponse(),
+    DefaultResponse()
+]
+
+
+RTM_READ_DELAY = 1  # 1 second delay between reading from RTM
+
+# MENTION_REGEX = "^<@(|[WU].+)>(.*)"
 logging.basicConfig(
     level=logging.DEBUG,
     datefmt='%Y.%m.%d %H:%M:%S',
     format='[%(asctime)s][%(name)s][%(levelname)s] - %(message)s'
 )
 logger = logging.getLogger(__name__)
-# logging.getLogger('urllib3.connectionpool').setLevel(logging.DEBUG)
+logging.getLogger('urllib3.connectionpool').setLevel(logging.DEBUG)
 
 
 class Bot(object):
@@ -39,10 +48,10 @@ class Bot(object):
         logger.debug('Parsing message events : %s', messages)
 
         for message in messages:
-            user_id, msg_txt = parse_direct_mention(message["text"])
-            logger.debug('Retrieve user id = %s with message : %s', user_id, message)
-            if user_id == self._starterbot_id:
-                return msg_txt, message["channel"]
+            msg_txt = parse_direct_mention(message["text"])
+            # logger.debug('Retrieve user id = %s with message : %s', user_id, message)
+            #if user_id == self._starterbot_id:
+            return msg_txt, message["channel"]
 
         return None, None
 
@@ -51,19 +60,19 @@ class Bot(object):
             Executes bot command if the command is known
         """
         # Default response is help text for the user
-        default_response = "Not sure what you mean. Try *{}*.".format(EXAMPLE_COMMAND)
 
-        # Finds and executes the given command, filling in response
         response = None
-        # This is where you start to implement more commands!
-        if command.startswith(EXAMPLE_COMMAND):
-            response = "Sure...write some more code then I can do that!"
+        for gen in RESPONSES:
+            response = gen.run(command)
+            if response is not None:
+                break
+            logger.debug('Retrieve response from generator %s : %s', gen.__class__, response)
 
         # Sends the response back to the channel
         self._slack_client.api_call(
             "chat.postMessage",
             channel=channel,
-            text=response or default_response
+            text=response
         )
 
 
@@ -72,14 +81,15 @@ def parse_direct_mention(message_text):
         Finds a direct mention (a mention that is at the beginning) in message text
         and returns the user ID which was mentioned. If there is no direct mention, returns None
     """
-    matches = re.search(MENTION_REGEX, message_text)
+    # matches = re.search(MENTION_REGEX, message_text)
     # the first group contains the username, the second group contains the remaining message
-    return (matches.group(1), matches.group(2).strip()) if matches else (None, None)
+    #return (matches.group(1), matches.group(2).strip()) if matches else (None, None)
+    return message_text
 
 
 def main():
     token = os.environ.get('SLACK_BOT_TOKEN')
-    token = 'xoxb-306089280870-tu2bRwPQ5MnGuUH6pHo9G8c4'
+    token = 'xoxb-305575578096-4eaTXYm0ORfprUVN38RUTVtk'
     logger.debug('Token : %s', token)
     slack_client = SlackClient(token)
     if slack_client.rtm_connect():
