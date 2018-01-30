@@ -89,7 +89,7 @@ def parse_direct_mention(message_text):
 
 def main():
     token = os.environ.get('SLACK_BOT_TOKEN')
-    token = 'xoxb-305575578096-4eaTXYm0ORfprUVN38RUTVtk'
+    token = ''
     logger.debug('Token : %s', token)
     slack_client = SlackClient(token)
     if slack_client.rtm_connect():
