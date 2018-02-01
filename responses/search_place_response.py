@@ -4,7 +4,7 @@ import googlesearch
 
 from responses import AbstractResponse
 
-SEARCH_COMMAND = re.compile("i want to visit\s+(?P<place>.+)\s*", re.IGNORECASE)
+SEARCH_COMMAND = re.compile('i want to visit\s+(?P<place>.+)\s*', re.IGNORECASE)
 
 
 class SearchPlaceResponse(AbstractResponse):
@@ -15,7 +15,7 @@ class SearchPlaceResponse(AbstractResponse):
             place = command_search.group('place')
             response = googlesearch.search(
                 'Visiting ' + place,
-                lang="cn",
+                lang="en",
                 num=1,
                 stop=1,
                 pause=1

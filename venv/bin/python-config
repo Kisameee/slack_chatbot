@@ -1,4 +1,4 @@
-#!/home/soat/ybfit2/venv/bin/python
+#!/home/soat/ybfit/venv/bin/python
 
 import sys
 import getopt

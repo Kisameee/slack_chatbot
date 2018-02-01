@@ -1,6 +1,5 @@
 import logging
 import os
-import re
 import time
 
 from slackclient import SlackClient
@@ -8,12 +7,17 @@ from slackclient import SlackClient
 # constants
 from responses.default_response import DefaultResponse
 from responses.do_response import DoCommandResponse
+from responses.grettings import Grettings
+from responses.look_for import Lookfor
 from responses.search_place_response import SearchPlaceResponse
 
 RESPONSES = [
     DoCommandResponse(),
     SearchPlaceResponse(),
+    Grettings(),
+    Lookfor(),
     DefaultResponse()
+
 ]
 
 
@@ -89,7 +93,7 @@ def parse_direct_mention(message_text):
 
 def main():
     token = os.environ.get('SLACK_BOT_TOKEN')
-    token = ''
+    token = 'xoxb-305575578096-yxtqbWU1xy3iaZ8s0YBxVCIF'
     logger.debug('Token : %s', token)
     slack_client = SlackClient(token)
     if slack_client.rtm_connect():

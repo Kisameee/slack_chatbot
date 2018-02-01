@@ -1,4 +1,4 @@
-#!/home/soat/ybfit/venv/bin/python
+#!/home/soat/ybfit/venv/bin/python3.5
 
 # Python bindings to the Google search engine
 # Copyright (c) 2009-2016, Mario Vilas

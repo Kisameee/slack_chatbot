@@ -1,4 +1,4 @@
-#!/home/soat/ybfit2/venv/bin/python3
+#!/home/soat/ybfit/venv/bin/python
 
 import argparse
 import code
